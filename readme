@@ -1,3 +1,10 @@
+**Flame Compiler**
+This is an old project from U Chicago CS226, spring 2000.
+It compiles a small imperative programming language called
+Flame to Sparc assembly.
+
+--
+
 Josh Joyce
 jnjoyce@uchicago.edu
 
