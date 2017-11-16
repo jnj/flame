@@ -1,0 +1,26 @@
+/* Extremely bogus fact */
+fun fact(n:int)
+    fun fact(r:int)
+        begin
+            if r < n then return r*fact(r+1)
+            else return n
+        end;
+    begin
+        if n > 1 then return fact(1)    /* Should call inner fact() */
+        else return 1
+    end
+
+
+fun main() 
+   n:int;
+   f:int;
+   begin
+       print("Enter a number n :");
+       read(n);
+       f :=  fact(n);
+       write(f);
+       print("\n")
+   end
+
+ 
+  

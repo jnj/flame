@@ -1,0 +1,19 @@
+fun hanoi(n:int,src:int, dest:int, spare:int)
+    begin
+       if n == 1 then return 1
+       else return hanoi(n-1,src,spare,dest) + hanoi(1,src,dest,spare) + hanoi(n-1,spare,dest,src)
+    end
+
+fun main()
+   n:int;
+   moves:int;
+   begin
+      print("Towers of hanoi.\n");
+      print("Enter number of rings : ");
+      read(n);
+      moves := hanoi(n,1,3,2);
+      print("Solution in ");
+      write(moves);
+      print(" moves\n")
+   end
+

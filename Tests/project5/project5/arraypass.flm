@@ -1,0 +1,29 @@
+fun fill(x:int[100])
+  i : int;
+  begin
+      i := 0;
+      while i < 100 do begin
+           x[i] := 2*i+1;
+           i := i + 1
+      end
+  end
+
+fun show(x:int[100])
+  i : int;
+  begin
+      i := 0;
+      while i < 100 do begin
+           write(x[i]-i);
+           print("\n");
+           i := i + 1
+      end   
+  end 
+
+fun main()
+  a : int[100];
+  i : int;
+  begin
+      fill(a);
+      show(a)
+  end
+

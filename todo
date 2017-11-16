@@ -1,0 +1,7 @@
+High priority:
+    * Set aside a register for DISPLAY
+    * Optimizations
+
+Low  priority:
+    * Fix the one shift/reduce warning
+    * Pass nestofevil

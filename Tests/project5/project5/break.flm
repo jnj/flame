@@ -1,0 +1,23 @@
+
+fun main()
+   n: int;
+   m: int;
+   begin
+      n := 0;
+      while 1 == 1 do begin
+          m := 0;
+          while n > 0 do begin
+                m := m + 1;
+                n := n + 1;
+                if m == 10 then break
+          end;
+          if n >= 100000 then break;
+          n := n + 10
+      end;
+      write(n)
+   end
+
+
+
+         
+           

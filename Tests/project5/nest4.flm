@@ -1,0 +1,23 @@
+
+fun foo()
+    n:int;
+    fun bar(a:int)
+        n:int;
+        begin
+             n := 2*a;
+             write(n);
+             print("\n")
+        end;
+    begin
+	n := 10;
+        while n > 0 do begin
+            bar(n);
+            n := n - 1
+        end
+    end
+
+
+fun main()
+    begin
+         foo()
+    end

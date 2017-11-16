@@ -1,0 +1,27 @@
+fun main() 
+   n : int;
+   m : int;
+   r : int;
+   begin
+       print("Welcome to the (f)lame factorial calculator\n");
+       n := 1;
+       while n > 0 do begin
+           print("Enter n (or 0 to exit): ");
+           read(n);
+           if n > 0 then begin
+               r := 1;
+               m := n;
+               while m > 1 do begin
+                 r := r * m;
+                 m := m - 1
+               end;
+               write(n);
+               print(" factorial is ");
+               write(r);
+               print("\n")
+           end
+       end
+   end
+
+               
+              

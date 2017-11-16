@@ -1,0 +1,19 @@
+fun main()
+   x: int[8];
+   i: int;
+   begin
+       i := 0;
+       while i < 8 do begin 
+           read(x[i]);
+           i := i + 1
+       end;
+       i := 0;
+       while i < 8 do begin
+           write(2*x[i]);
+           print("\n");
+           i := i + 1
+       end
+   end
+
+          
+      

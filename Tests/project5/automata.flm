@@ -1,0 +1,311 @@
+fun reflect(i:int)
+begin
+	return i
+end
+
+fun setState(in:int[100])
+	selection:int;
+	fun setDefaultState(state:int)
+		
+		fun setState1()
+			i:int;
+			begin
+				i := 0;
+				while(i < reflect(100)) do begin
+					in[i]   := 1; 
+					in[reflect(i+1)] := 0;
+					in[i+2] := 1;
+					in[i+3] := 1;
+					in[reflect(i+4)] := 0;
+					in[i+5] := 1;
+					
+					in[reflect(i+6)] := 0;
+					in[i+7] := 1;
+					in[i+8] := 1;
+					in[reflect(i+9)] := 0;
+					
+					i := reflect(i + 10)
+				end;
+				skip
+			end;
+	
+	
+		fun setState2()
+			i:int;
+			begin
+				i := 0;
+				while(i < 100) do begin
+					in[i]   := 0; 
+					
+					i := i + 1
+				end;
+				in[50] := 1;
+				skip
+			end;
+		fun setCustomState(array:int[100])
+			i:int;
+			begin
+				print("OK you asked for it.\n");
+				print("You'll have to enter 100 0's or 1's\n");
+				i := 0;
+				while(i < 100) do
+				begin
+					print("Enter entry ");
+					write(i);
+					print(": ");
+					read(array[i]);
+					if array[i] > 1 then
+						array[i] := 1;
+					if array[i] < 0 then
+						array[i] := 0;
+						
+					i := i + 1
+				end;
+				
+				skip
+			
+			end;
+	
+	begin
+		if (state == reflect(1)) then 
+			setState1();
+		if (state == 2) then
+			setState2();
+		if (state == 3) then	
+			setCustomState(in);
+		skip
+	
+	
+	end;
+
+begin
+	print("Please Choose one of the following:\n");
+	print("0) Use whatever is in memory (kinda random I guess)\n");
+	print("1) Use Default state 1\n");
+	print("2) Use Default state 2\n");
+	print("3) Configure a custom state\n");
+	print("4) Print the update rules\n");
+	print("5) Exit\n");
+	print("----------------------------------------");
+	selection := -1;
+	while(selection < 0 or selection > 5) do begin
+		print("\nSelection: ");
+		read(selection);
+		if selection == 4 then
+			begin
+				print("The update rule is:\n");
+				print("cell[i,t+1] = (cell[i-1,t] + cell[i+1,t]) mod 2\ni = [1,100] and");
+				print(" t is number of iterations\n");
+				selection := -1
+			end
+	end;
+	if (selection == 2 or selection == 1) then
+		setDefaultState(selection);
+	
+	if selection == 3 then
+		setDefaultState(selection);
+		
+	return selection
+end
+
+
+
+
+
+fun getNumberOfIterations(i:int)
+n:int;
+begin
+	i := -999;
+	print("Please enter the number of iterations: ");
+	read(n);
+	return n
+end
+
+
+fun evilreflect(i:int)
+	fun reflect(i:int)
+		j:int;
+		fun nest1(i:int)
+			fun nest2(j:int)
+				fun nest3(i:int)
+					fun nest4(j:int)
+						fun nest5(i:int)
+							fun nest6(j:int)
+								fun nest7(i:int)
+									fun nest8(j:int)
+										arg:int[5000];
+										fun nest9(i:int[5000])
+											
+										begin
+											j := j + 1;
+											return i[4999]
+													
+												
+										end;
+									begin
+										i := i + 1;
+										arg[4999] := j;
+										return nest9(arg)
+									end;
+								begin
+									j := j + 1;
+									
+									return nest8(i)
+								end;
+							begin
+								i := i + 1;
+								
+								return nest7(j)
+							end;
+						begin
+							j := j + 1;
+					
+							return nest6(i)
+						end;
+					begin
+						i := i + 1;
+						
+						return nest5(j)
+					end;
+				begin
+					j := j + 1;
+					return nest4(i)
+				end;
+			begin
+				i := i + 1;
+				return nest3(j)
+			end;
+		begin
+			j := j + 1;
+			return nest2(i)
+		end;
+	begin
+		return nest1(i)
+	end;
+begin
+	return reflect(i)
+end
+					
+
+
+
+
+fun showState(s:int[100])
+i:int;
+
+fun printit(it:int)
+	begin
+		
+		if it == 1 then
+			write(evilreflect(it-1))
+		else 
+			print(" "); 
+	
+			
+		it := -9999
+	end;
+begin
+
+	i := 0;
+	while(i < 100) do begin
+		printit(s[i]);
+		i := i + 1
+	end;
+	print("\n")	
+end	
+
+fun updateState(state:int[100])
+i:int;
+extended_state:int[102];
+fun setExState(a:int[102],b:int[100])
+	i:int;
+	begin
+		i := 0;
+		while(i < 100) do begin
+			a[i+1] := b[i];
+			i := i + 1
+		end
+	end;
+
+fun mod2(i:int)
+	begin
+		while(i > 0) do begin
+			i := i - 2
+		end;
+		if i == 0 then
+			return 0;
+		return 1
+	end;
+begin
+	extended_state[0] := 0;
+	extended_state[101] := 0;
+	i := 1;
+	setExState(extended_state,state);
+	while(i < 101) do begin
+		state[i-1] := mod2(extended_state[i-1] + extended_state[i+1]);
+		i := i + 1
+	end
+	
+	
+	
+end
+
+fun setStateEvil(a:int[100])
+	fun set(b:int[100])
+		x:int[10];
+		i:int;
+		fun nest(c:int[100],x0:int,x1:int,x2:int,x3:int,x4:int,x5:int,x6:int,x7:int,x8:int,x9:int,x10:int)
+		temp:int;
+		begin
+			temp := x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10;
+			if temp != 10 then
+				return -100;
+			x0 := 0;
+			x1 := 0;
+				
+			return setState(c)
+		end; 
+	begin
+		i := 0;
+		while(i < 10) do begin
+			x[i] := 1;
+			i := i  + 1
+		end;
+		
+		i := nest(b,x[0],x[1],x[2],x[3],x[4],x[5],x[6],x[7],x[8],x[9],0);
+		if x[0] != 1 then 
+			return -100;
+		return i
+	end;
+begin
+	return set(a)
+
+end
+
+
+fun main()
+
+state:int[100];
+s:int;
+i:int;
+n:int;
+begin
+	s := setStateEvil(state);
+	if s != 5 then 
+	begin
+		i := 0;
+		n := getNumberOfIterations(i);
+		if i != 0 then
+			print("oops\n");
+		print("Here we go...\n");
+		showState(state);
+		while(i < n) do
+			begin
+				updateState(state);
+				showState(state);
+				i := i + 1
+			end;
+		print("Thats it...\n")
+	end
+
+end

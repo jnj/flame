@@ -1,0 +1,113 @@
+# The Flame BNF Grammar
+# $Id: grammar,v 1.1.1.1 2001/06/05 06:11:41 josh Exp $
+
+
+<program>    ::= <fundefs>
+
+<fundefs>    ::= <fundefs> <fundecl>
+             |   empty
+
+<fundecl>    ::= fun <id>(<funargs>) <locals> begin <statements> end
+
+<funargs>    ::= <arglist>            
+             |   empty
+
+<arglist>    ::= <arg>
+             |   <arglist>, <arg>
+
+<arg>        ::= <id>:<type>
+
+<locals>     ::= <locallist>
+             |   empty
+
+<locallist>  ::= <locallist> <local>;
+             |   <local>;
+
+<local>      ::= <id>:<type>
+             |   <fundecl>
+
+<statements> ::= <statement>
+             |   <statements>; <statement>
+
+<statement>  ::= while <relation> do <statement>
+             |   if <relation> then <statement>
+             |   if <relation> then <statement> else <statement>
+             |   <location> := <expression>
+             |   print(<literal>)
+             |   write(<expression>)
+             |   read(<location>)
+             |   return(<expression>)
+             |   skip
+             |   break
+             |   begin <statements> end
+             |   <id>(<exprs>)
+
+/* 
+   This part of the grammar (below) is ambiguous, but the parser generator 
+   will resolve the ambiguity. This is needed to handle multiple relations:
+ 
+   while a < b and c > d and e >= f do 
+*/
+   
+<relation>   ::= <relation> and <relation>
+             |   <relation> or <relation>
+
+<relation>   ::= <expression> and <relterm>
+             |   <epxression> or <relterm>
+             |   <relterm>
+
+<relterm>    ::= <relterm> < <relfactor>
+             |   <relterm> > <relfactor>
+             |   <relterm> >= <relfactor>
+             |   <relterm> <= <relfactor>
+             |	 <relterm> == <relfactor>
+             |   <relterm> != <relfactor>
+             |   <relfactor>
+
+<relfactor>  ::= not <relation>
+             |   (<relation>)
+
+<location>   ::= <id>
+             |   <id>[<expression>]
+
+<exprs>      ::= <exprlist>
+             |   empty
+
+<exprlist>   ::= <expression>
+             |   <exprlist>, <expression>
+
+<expression> ::= <expression> + <term>
+             |   <expression> - <term>
+             |   <term>
+
+<term>       ::= <term> * <factor>
+             |   <term> / <factor>
+             |   <factor>
+
+<factor>     ::= - <expression>
+             |   + <expression>
+             |   (<expression>)
+             |   <id>(<exprs>)
+             |   <location>
+             |   <number>
+             |   int(<expression>)
+             |   float(<expression>)
+
+<type>       ::= int 
+             |   float
+             |   int[<expression>]
+             |   float[<expression>]
+
+/* This part of the grammar allows for multiple adjacent strings */
+
+<literal>    ::= <strings>
+
+<strings>    ::= <string>
+             |   <strings> <string>
+
+Low level tokens, like <id>, <number> and <string>, are in flamelex.py as 
+regular expressions.
+
+
+
+

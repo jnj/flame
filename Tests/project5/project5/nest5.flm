@@ -1,0 +1,19 @@
+
+fun foo(n:int)
+    fun bar()
+        begin
+             write(2*n);
+             print("\n")
+        end;
+    begin
+        while n > 0 do begin
+            bar();
+            n := n - 1
+        end
+    end
+
+
+fun main()
+    begin
+         foo(10)
+    end

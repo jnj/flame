@@ -1,0 +1,78 @@
+fun queens(nqueens:int)
+    rows:int[16];
+    colplusrow:int[31];
+    colminusrow:int[31];
+    nsolutions:int;
+
+    fun try(column:int)
+
+        fun setqueen(row:int, column:int)
+           begin
+              rows[row] := 0;
+              colplusrow[column+row] := 0;
+              colminusrow[column-row+nqueens-1] := 0
+           end;
+
+        fun removequeen(row:int, column:int)
+           begin
+              rows[row] := 1;
+              colplusrow[column+row] := 1;
+              colminusrow[column-row+nqueens-1] := 1
+           end;
+
+        rowflag:int;
+        plusflag:int;
+        minusflag:int;
+        row:int;
+        begin
+           row := 0;
+           while row < nqueens do begin
+                 rowflag := rows[row];
+                 plusflag := colplusrow[column+row];
+                 minusflag := colminusrow[column-row+nqueens-1];
+                 if rowflag == 1 and plusflag == 1 and minusflag == 1 then begin
+                     setqueen(row,column);
+                     if column < (nqueens-1) then try(column+1)
+                     else nsolutions := nsolutions + 1;
+                     removequeen(row,column)
+                 end;
+                 row := row + 1
+           end
+        end;
+
+     i:int;
+
+     begin
+         i := 0;
+         while i < nqueens do begin 
+              rows[i] := 1;
+              colplusrow[i] := 1;
+              colminusrow[i] := 1;
+              i := i + 1
+         end;
+         while i < (nqueens*2-1) do begin
+              colplusrow[i] := 1;
+              colminusrow[i] := 1;
+              i := i + 1
+         end;
+         nsolutions := 0;
+         try(0);
+         return nsolutions
+     end
+
+fun main()
+    ns:int;
+    nq:int;
+    begin
+         print("N-queens problem\n");
+         print("Enter number of queens: ");
+	 read(nq);
+         print("Solving the ");
+	 write(nq);
+	 print("-queens problem.\n");
+         ns := queens(nq);
+         print("Found ");
+         write(ns);
+         print(" solutions.\n")
+    end
+

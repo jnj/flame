@@ -1,0 +1,11 @@
+/* This tests for invalid expr in array indices */
+
+fun foo()
+    begin
+    a[get_index()] := 2; /* valid */
+    a[int(2.33)] := 5;
+    a[2 == 3] := 4   /* invalid */
+    end
+
+
+        

@@ -1,0 +1,18 @@
+
+fun foo1()
+    fun bar1()
+        begin
+             print("I'm bar1\n")
+        end;
+    begin
+        print("I'm foo1\n");
+        bar1()
+    end
+
+
+fun main()
+    begin
+         foo1()
+    end
+
+

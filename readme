@@ -1,0 +1,12 @@
+Josh Joyce
+jnjoyce@uchicago.edu
+
+Implementation Notes:
+
+* Parser generates random "encouragement" to help motivate error-prone coders.
+* The compiler does not do array bounds checking, which is not worth the
+  performance hit.
+* Optimizations: Not really.
+    - Does algebraic identity stuff in the parser.
+    - Does mul/div by powers of 2 using shifts.
+    - Always keeps DISPLAY in %o5.

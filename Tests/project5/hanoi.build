@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "flame.py", line 10, in <module>
+    import flameparse
+  File "/home/josh/Documents/docs/courses/cs226/flame/flameparse.py", line 12, in <module>
+    import flameerr
+  File "/home/josh/Documents/docs/courses/cs226/flame/flameerr.py", line 9, in <module>
+    import whrandom
+ImportError: No module named whrandom

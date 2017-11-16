@@ -1,0 +1,24 @@
+fun main()
+   a:int;
+   b:int;
+   c:int;
+   d:int;
+   begin
+      a := 4;
+      b := 5;
+      c := 10;
+      d := 20;
+
+      if a + b < c + d then
+          print("Good compiler\n")
+      else
+          print("Bad compiler\n");
+
+      if not a*b > c*d and a+b < c +d then
+          print("Good compiler\n")
+      else
+          print("Bad compiler\n")
+
+   end
+    
+  

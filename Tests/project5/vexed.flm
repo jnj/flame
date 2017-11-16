@@ -1,0 +1,506 @@
+/* Vexed game - Don't even ask about the performance of this */
+
+/* Board consists of the following codes:
+
+      -1    =  Wall
+       0    =  Empty piece
+       n    =  Block number
+
+   Max board size = 10x10 
+*/
+
+/* Utility function. */
+
+fun mod(x:int,y:int)
+    begin
+       return x - (x/y) * y
+    end
+
+fun vexed()
+
+    /* Global variables containing information about the board */
+    nrows    : int;
+    ncolumns : int;
+
+    /* Queue for holding board configurations.  Since we don't
+       have dynamic allocation, we just set this to some large
+       size. Ugh. */
+       
+    queue    : int[1000000];
+    first    : int;          /* First index in queue */
+    last     : int;          /* last index in queue */
+
+
+    board    : int[100];
+
+    /* Set a board piece */
+    fun set(r:int, c:int, val:int)
+        begin
+            board[r*ncolumns + c] := val
+        end;
+
+    /* Get a board piece */
+    fun get(r:int, c:int)
+        begin
+            return board[r*ncolumns + c]
+        end;
+
+
+    /* Make pieces fall.  Returns the number of blocks that fell */
+    fun fall()
+        v : int;
+        r : int;
+        c : int;
+        nblocks : int;
+        fun fall_one(r:int,c:int)
+            v:int;
+            fell:int;
+            begin
+                fell:=0;
+                while r > 1 do begin
+                    v:=get(r-1,c);
+                    if v != 0 then break;
+                    set(r-1,c,get(r,c));
+                    set(r,c,0);
+                    fell:=1;
+                    r := r - 1
+                end;
+                return fell
+            end;
+
+        begin   /* fall */
+            nblocks := 0;
+            r := 2;
+            while r < nrows do begin
+               c := 1;
+               while c < ncolumns-1 do begin
+                   v := get(r,c);
+                   if v > 0 then begin 
+                       nblocks := nblocks + fall_one(r,c)
+                   end;
+                   c := c + 1
+               end;
+               r := r + 1
+            end;
+            return nblocks
+         end;
+            
+     /* Remove pieces */
+     fun remove_blocks()
+         r:int;
+         c:int;
+
+        /* Test for adjacent pieces */
+        fun has_adjacent(r:int,c:int)
+            v : int;
+            w : int;
+            begin
+                v := get(r,c);
+                if v <= 0 then return 0;
+                if r+1 < nrows then begin
+                    w := get(r+1,c);
+                    if v == w then return 1
+                end;
+                if r-1 >= 0 then begin
+                    w := get(r-1,c);
+                    if v == w then return 1
+                end;
+                if c+1 < ncolumns then begin
+                    w := get(r,c+1);
+                    if v == w then return 1
+                end;
+                if c-1 >= 0 then begin
+                    w := get(r,c-1);
+                    if v == w then return 1
+                end;
+                return 0
+            end;
+
+	/* Eliminate pieces that are adjacent to each other */
+	fun remove_adjacent(r:int,c:int,v:int)
+	    w  : int;
+            begin
+    	       if r < 0 or r >= nrows or c < 0 or c>= ncolumns then return 0;
+	       w := get(r,c);
+	       if w != v then return 0;
+	       set(r,c,0);
+	       remove_adjacent(r+1,c,v);
+	       remove_adjacent(r-1,c,v);
+	       remove_adjacent(r,c+1,v);
+	       remove_adjacent(r,c-1,v);
+               return 0
+  	    end;
+
+         removed : int;
+         begin  /* remove_blocks */
+             removed := 0;
+             r := 1;
+             while r < nrows do begin
+                 c := 1;
+                 while c < (ncolumns-1) do begin
+                       if has_adjacent(r,c) == 1 then begin
+                            remove_adjacent(r,c,get(r,c));
+                            removed := 1
+                       end;
+                       c := c + 1
+                 end;
+                 r := r + 1
+              end;
+              fall();
+              return removed
+         end;
+
+     /* Print out the game board */
+     fun print_board()
+         v:int;
+         r:int;
+         c:int;
+         begin
+              r:= nrows - 1;
+              while r >= 0 do begin
+                   c := 0;
+                   while c < ncolumns do begin
+                         v := get(r,c);
+                         if v == 0 then print("-")
+                         else if v == -1 then print("#")
+                         else write(v);
+                         c := c + 1
+                   end;
+                   print("\n");
+                   r := r - 1
+               end
+         end;
+
+     /* Count blocks */
+     fun count_blocks() 
+         r:int;
+         c:int;
+         n:int;
+         begin
+            n:=0;
+            r:=1;
+            while r < nrows do begin
+                c:=1;
+                while c < ncolumns-1 do begin
+                     if get(r,c) > 0 then n:= n + 1;
+                     c := c + 1
+                end;
+                r := r + 1
+            end;
+            return n
+         end;
+
+    fun clear_board()
+        r:int;
+        c:int;
+        begin
+            r := 1;
+            while r < nrows do begin
+                c:=1;
+                while c < ncolumns-1 do begin
+                      if get(r,c) > 0 then set(r,c,0);
+                      c := c + 1
+                end;
+                r := r + 1
+            end
+        end;
+
+
+    fun copy_board(index:int)
+        n:int;
+        i:int;
+        p:int;
+        r:int;
+        c:int;
+        v:int;
+        begin
+            clear_board();
+            n := queue[index];
+            i := 1;
+            while i <= n do begin
+                p := queue[index+i];
+                c := mod(p,256);
+                p := p/256;
+                r := mod(p,256);
+                v := p/256;
+                set(r,c,v);
+                i := i + 1
+            end
+       end;
+ 
+    /* Queuing functions */
+
+    /* This packs a game board onto the queue and additionally checks for
+       previously configurations */
+
+    fun enqueue(movenum:int, moveindex:int)
+        r:int;
+        c:int;
+        n:int;
+        l:int;
+        v:int;
+        n1:int;
+        i:int;
+	j:int;
+        k:int;
+        begin
+            /* First, we're going to go ahead and pack the board on the queue */
+            r := 1;
+            l := last + 1;
+            n := 0;
+            while r < nrows do begin
+               c := 1;
+               while c < ncolumns do begin
+                   v:=get(r,c);
+                   if (v > 0) then begin
+                        queue[l] := v*65536 + r*256 + c;
+                        n := n + 1;
+                        l := l + 1
+                   end;
+                   c := c + 1
+               end;
+               r := r + 1
+            end;
+            queue[l] := movenum;
+            l := l+1;
+            queue[l] := moveindex;
+            l := l+1;
+            queue[last] := n;
+
+            /* Now we have to scan the queue looking for previous configurations */
+
+            i := first;
+            j := last + 1;
+            while i != last do begin
+                n1 := queue[i];
+                if n1 == n then begin
+                     k := 1;
+                     while k <= n do begin
+                          if queue[i+k] != queue[last+k] then break;
+                          k := k + 1
+                     end;
+                     if k > n then return 0     /* Already on queue */
+                end;
+                i := i + n1 + 3
+            end;
+            last := l;
+
+            return 1
+         end;
+            
+    /* This function dequeues a game configuration and stores it in board */
+
+    fun dequeue()
+        n:int;
+        v:int;
+        begin
+            /* Check if queue is empty */
+            if first == last then return -1;
+
+            copy_board(first);
+            n := queue[first];
+            v := first+n+1;
+            first := first + n + 3;
+            return queue[v]
+         end;
+
+    /* Make moves. Scan the game board and find all of the valid moves.
+       This simply drops the board configurations onto the queue */
+
+    fun make_moves(movenum:int,moveindex:int) 
+        r : int;
+        c : int;
+        v : int;
+        v1: int;
+        begin
+           r := 1;
+           while r < nrows do begin
+              c := 1;
+              while c < ncolumns-1 do begin
+                  v := get(r,c);
+                  if v > 0 then begin
+                      /* Try left move */
+                      v1 := get(r,c-1);
+                      if v1 == 0 then begin
+                           set(r,c-1,v);
+                           set(r,c,0);
+                           enqueue(movenum,moveindex);
+                           set(r,c-1,0);
+                           set(r,c,v)
+                      end;
+                      /* Try right move */
+                      v1 := get(r,c+1);
+                      if v1 == 0 then begin
+                           set(r,c+1,v);
+                           set(r,c,0);
+                           enqueue(movenum,moveindex);
+                           set(r,c+1,0);
+                           set(r,c,v)
+                      end
+                  end;
+                  c := c + 1
+              end;
+              r := r + 1
+           end
+        end;
+
+    /* Run the vexed game */
+    fun run_game()
+       nmoves : int;
+       nm : int;
+       lastmove : int;
+       n  : int;
+       moves : int[20];
+       begin
+           nmoves := 0;
+           enqueue(0,0);
+
+           while 1 == 1 do begin
+ 	       /* Put the game board into a stable state */
+	       lastmove := first;
+               nm := dequeue();
+	       if nm <0 then break;
+               nmoves := nm;
+               fall();
+
+               while 1 == 1 do begin
+                   if remove_blocks() == 0 then break
+               end;
+               
+               /* Count the blocks */
+               if count_blocks() == 0 then break;
+
+               /* Make board moves */
+               make_moves(nmoves+1,lastmove)
+
+           end;
+
+           nm := nmoves;
+           while nm >= 0 do begin
+               moves[nm] := lastmove;
+               n := queue[lastmove];
+               lastmove := queue[lastmove+n+2];
+               nm := nm - 1
+           end;
+
+           n := 0;
+           while n < nmoves do begin
+               print("\nMove ");
+               write(n+1);
+               print("\n");
+               copy_board(moves[n+1]);
+               print_board();
+               n := n + 1
+           end;
+           print("\nSolution in ");
+           write(nmoves);
+           print("\n")
+
+        end;
+
+ 
+     /* Create board */
+     fun create_board()
+         i : int;
+         j : int;
+         begin
+             nrows := 4;
+             ncolumns := 5;
+             i := 0;
+             while i < nrows do begin 
+                   j := 0;
+                   while j < ncolumns do begin
+                         if i == 0 then set(i,j,-1)
+                         else set(i,j,0);
+                         j := j + 1
+                   end;
+                   set(i,0,-1);
+                   set(i,ncolumns-1,-1);
+                   i := i + 1
+              end;
+              set(1,3,-1);
+              set(2,1,-1);
+              set(1,1,1);
+              set(3,1,1);
+              set(1,2,2);
+              set(2,3,2)
+          end;
+
+ 
+     /* Create board */
+     fun create_board_big()
+         i : int;
+         j : int;
+         begin
+             nrows := 6;
+             ncolumns := 7;
+             i := 0;
+             while i < nrows do begin 
+                   j := 0;
+                   while j < ncolumns do begin
+                         if i == 0 then set(i,j,-1)
+                         else set(i,j,0);
+                         j := j + 1
+                   end;
+                   set(i,0,-1);
+                   set(i,ncolumns-1,-1);
+                   i := i + 1
+              end;
+              set(1,1,-1);
+              set(1,2,-1);
+              set(1,3,-1);
+              set(3,2,-1);
+              set(3,3,-1);
+              set(3,5,-1);
+
+              set(1,4,2);
+              set(1,5,3);
+              set(2,2,1);
+              set(2,3,3);
+              set(4,2,3);
+              set(4,3,1);
+              set(4,5,1);
+              set(5,3,2)
+          end;
+
+
+/* Vexed */
+
+begin
+
+    /* Initialize queue */
+    first := 0;
+    last  := 0;
+  
+    create_board_big();
+    print("Start\n\n");
+    print_board();
+
+    print("\nFinding a minimum solution (this might take a minute)\n");
+
+    run_game()
+
+/*
+    write(first);
+    print("\n");
+    write(last);
+    print("\n") 
+*/
+end
+
+fun main() 
+    begin
+       print("Are you vexed yet?\n\n");
+       vexed()
+    end
+
+    
+
+          
+                         
+
+
+    
+
+
+  

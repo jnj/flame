@@ -1,0 +1,8 @@
+*.s
+*~
+*.pyc
+*.exp
+*.out
+*.dif
+Test/**/*.o
+

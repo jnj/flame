@@ -1,0 +1,18 @@
+fun main()
+   a:int;
+   b:int;
+   c:int;
+   d:int;
+   begin
+      a := 4;
+      b := 5;
+      c := 10;
+      d := a+b*c;      /* Should produce 54 */ 
+      write(d);
+      print("\n");
+      d := a*b+c;      /* Should produce 30 */
+      write(d);
+      print("\n")
+   end
+    
+  
